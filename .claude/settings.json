@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(gh api:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr ready:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh label list:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git -C:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git merge-base:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git mv:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(skillworks-preflight:*)",
+      "Bash(seed-steering:*)",
+      "Bash(set-co-authored-by:*)",
+      "Bash(allow-commands:*)",
+      "Bash(spec-loop:*)",
+      "Bash(land-ticket:*)",
+      "Bash(ticket-worktree:*)",
+      "Bash(skillworks-suite:*)",
+      "Bash(tracker-publish:*)",
+      "Bash(spec-commits:*)",
+      "Read(~/.claude/plugins/**)",
+      "Read(//c/Projects/skillworks/plugins/**)"
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "skillworks": {
+      "source": {
+        "source": "directory",
+        "path": "C:/Projects/skillworks/plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "skillworks@skillworks": true
+  },
+  "autoMemoryEnabled": false,
+  "promptCacheTtl": "1h",
+  "subagentPromptCacheTtl": "1h",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
+}

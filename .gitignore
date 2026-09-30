@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+# The spec loop's working folders. Transient, per-machine.
+.spec-loop/
+.handoff/
+.claude/worktrees/
