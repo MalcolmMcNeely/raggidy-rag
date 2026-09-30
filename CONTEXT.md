@@ -17,7 +17,7 @@ _Avoid_: Segment, passage, fragment, split, piece
 
 **Heading trail**:
 The headings above a Chunk, from the Document's title down, such as "Saga model > Lifetime".
-_Avoid_: Breadcrumb, path, outline
+_Avoid_: Breadcrumb, outline, section path
 
 **Ingest**:
 The step that reads every Document in the folder, cuts it into Chunks, embeds each Chunk and stores
