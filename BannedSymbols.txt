@@ -1,0 +1,23 @@
+P:System.DateTime.Now;Read the Clock: clock.GetUtcNow(). See docs/agents/rules/determinism.md
+P:System.DateTime.UtcNow;Read the Clock: clock.GetUtcNow(). See docs/agents/rules/determinism.md
+P:System.DateTime.Today;Read the Clock: clock.GetUtcNow(). See docs/agents/rules/determinism.md
+P:System.DateTimeOffset.Now;Read the Clock: clock.GetUtcNow(). See docs/agents/rules/determinism.md
+P:System.DateTimeOffset.UtcNow;Read the Clock: clock.GetUtcNow(). See docs/agents/rules/determinism.md
+T:System.Diagnostics.Stopwatch;Read the Clock: clock.GetTimestamp(), then clock.GetElapsedTime(from)
+P:System.Environment.TickCount;Read the Clock: clock.GetTimestamp(), then clock.GetElapsedTime(from)
+P:System.Environment.TickCount64;Read the Clock: clock.GetTimestamp(), then clock.GetElapsedTime(from)
+M:System.Threading.Thread.Sleep(System.Int32);Wait on a fact. Where a delay is the fact, clock.Delay(span)
+M:System.Threading.Thread.Sleep(System.TimeSpan);Wait on a fact. Where a delay is the fact, clock.Delay(span)
+M:System.Threading.Tasks.Task.Delay(System.Int32);Wait on a fact. Where a delay is the fact, Task.Delay(span, clock)
+M:System.Threading.Tasks.Task.Delay(System.TimeSpan);Wait on a fact. Where a delay is the fact, Task.Delay(span, clock)
+M:System.Threading.Tasks.Task.Delay(System.Int32,System.Threading.CancellationToken);Wait on a fact. Where a delay is the fact, Task.Delay(span, clock, token)
+M:System.Threading.Tasks.Task.Delay(System.TimeSpan,System.Threading.CancellationToken);Wait on a fact. Where a delay is the fact, Task.Delay(span, clock, token)
+T:System.Threading.Timer;Use clock.CreateTimer(...)
+T:System.Timers.Timer;Use clock.CreateTimer(...)
+M:System.Threading.PeriodicTimer.#ctor(System.TimeSpan);Use new PeriodicTimer(period, clock)
+M:System.Threading.CancellationTokenSource.#ctor(System.Int32);Use new CancellationTokenSource(delay, clock)
+M:System.Threading.CancellationTokenSource.#ctor(System.TimeSpan);Use new CancellationTokenSource(delay, clock)
+M:System.Threading.CancellationTokenSource.CancelAfter(System.Int32);Use new CancellationTokenSource(delay, clock)
+M:System.Threading.CancellationTokenSource.CancelAfter(System.TimeSpan);Use new CancellationTokenSource(delay, clock)
+P:System.Net.Http.HttpClient.Timeout;Wait on the Clock, in the code that waits
+P:System.TimeProvider.System;Hand it to a registration as the default a test host replaces, under #pragma warning disable RS0030

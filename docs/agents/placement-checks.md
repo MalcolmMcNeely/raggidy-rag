@@ -6,8 +6,27 @@ Cite a breach by the name of the check that catches it. Where a rule has no chec
 
 | Check | The rule it runs |
 |---|---|
+| `SliceFoldersTests.EveryFirstLevelFolderUnderACodeRootIsASliceOrShared` | 1 |
+| `SliceFoldersTests.EveryFolderInsideAFrontEndSliceIsAConcern` | 2 |
+| `SliceReadsTests.ASliceNeverReadsAnotherSlice` | 3 |
+| `SliceReadsTests.SharedNeverReadsASlice` | 4 |
+| `SharedDoorTests.EveryFolderInSharedNamesAWordOfTheGlossary` | 5 |
+| `SliceFoldersTests.ASliceFolderSitsAtTheFirstLevelUnderItsOwnNameInEveryCodeRoot` | 6 |
+| `SliceFoldersTests.EverySliceIsAHeadwordOfTheGlossary` | 8 |
+| `SA1402` and `SA1649`, StyleCop.Analyzers in every build, set in `.editorconfig` | Files: a C# file holds one top-level type, named as the subject |
+| `GlobalUsingsTests.NoFileHoldsOnlyUsings` and `GlobalUsingsTests.NoUsingItemOutsideATestProjectNamesASlice` | Files: global usings go in the project file |
+| `IDE0130` in every build, set in `.editorconfig` and `Directory.Build.props` | Files: a C# namespace is the root namespace, then the folder path |
+| `TestPlacementTests.EveryTestSitsWhereTheCodeItTestsSits` | Tests: where a test sits |
+| `FolderSizeTests.NoFolderHoldsMoreSubjectsThanTheLimit` | Folder size |
+| `NameMapTests.ASubjectThatMatchesAPatternSitsInThatPatternsFolder` | Name map |
+| `BannedFolderNamesTests.NoFolderCarriesABannedName` | One shape: banned folder names |
+| `RS0030`, Microsoft.CodeAnalysis.BannedApiAnalyzers in every build, reading `BannedSymbols.txt` | `determinism.md`: Time |
+| `BannedWordsTests.NoSourceFileUsesAWordThatLost` | `words.md` |
+| `DocCommentsTests.DocCommentsSitWhereTheSettingSays` | `comments.md`: doc comments |
 
 The table is an index from a breach back to a rule, and the rules themselves stay in the one file.
+
+The starter tests live in `tests/RaggidyRag.Architecture.Tests`. They read each rule's YAML block at every run, so a changed setting changes what they check. The project proves the repo and holds no Slice, so the eight Slice rules leave it out, and it belongs to no context. A Slice test skips, and says so, while no context declares Slices.
 
 ## The checks that prove placement
 
@@ -17,8 +36,10 @@ List the narrowest commands that prove placement, and leave out the slow ones th
 
 | Command | Folder | Run first |
 |---|---|---|
+| `dotnet test --project tests/RaggidyRag.Architecture.Tests` | `.` | |
+| `dotnet build RaggidyRag.slnx` | `.` | |
 
-While this table is empty, no command proves placement, and a review judges placement by reading the rules alone.
+The first row runs the starter tests. The second runs the analyzers, `SA1402`, `SA1649`, `IDE0130` and `RS0030`, which fail the build.
 
 ## The two bends
 

@@ -1,0 +1,22 @@
+<Project>
+
+  <!--
+    The Clock rule, docs/agents/rules/determinism.md, clock: TimeProvider. BannedSymbols.txt at the repo
+    root copies its table of reaches. RS0030 is a warning, and a warning never fails a build.
+    The namespace rule, docs/agents/rules/file-placement.md: IDE0130 runs in the build only with
+    EnforceCodeStyleInBuild, and .editorconfig makes it an error.
+    SA0001 has no file, so .editorconfig cannot switch it off, and doc comments are off by rule.
+  -->
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <WarningsAsErrors>$(WarningsAsErrors);RS0030</WarningsAsErrors>
+    <NoWarn>$(NoWarn);SA0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0" PrivateAssets="all" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" Link="BannedSymbols.txt" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,3 @@
+[*.cs]
+# A test file is Subject.Tests.cs and holds SubjectTests, which SA1649 reads as a mismatch.
+dotnet_diagnostic.SA1649.severity = none

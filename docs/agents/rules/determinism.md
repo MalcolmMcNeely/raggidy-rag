@@ -94,5 +94,5 @@ written inside a string, are both left alone.
 
 ```yaml
 clock: TimeProvider
-contexts: []
+contexts: [Raggidy RAG]
 ```

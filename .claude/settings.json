@@ -33,7 +33,9 @@
       "Bash(tracker-publish:*)",
       "Bash(spec-commits:*)",
       "Read(~/.claude/plugins/**)",
-      "Read(//c/Projects/skillworks/plugins/**)"
+      "Read(//c/Projects/skillworks/plugins/**)",
+      "Bash(dotnet test:*)",
+      "Bash(dotnet build:*)"
     ]
   },
   "extraKnownMarketplaces": {

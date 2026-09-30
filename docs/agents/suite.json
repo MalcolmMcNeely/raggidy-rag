@@ -1,4 +1,25 @@
 {
   "runs": 1,
-  "checks": []
+  "checks": [
+    {
+      "command": ["dotnet", "test", "--solution", "RaggidyRag.slnx"],
+      "folder": ".",
+      "ignores": [
+        "README.md",
+        "CLAUDE.md",
+        ".gitignore",
+        ".gitattributes",
+        ".claude/settings.json",
+        "docs/agents/suite.json",
+        "docs/agents/loop.json",
+        "docs/agents/placement-checks.md",
+        "docs/agents/domain.md",
+        "docs/agents/issue-tracker.md",
+        "docs/agents/surfaces.md",
+        "docs/agents/review-architecture.md",
+        "docs/agents/review-spec.md",
+        "docs/agents/review-standards.md"
+      ]
+    }
+  ]
 }
