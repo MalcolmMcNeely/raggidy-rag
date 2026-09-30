@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.6887863">
+
+  <!-- The Suite's npm check already installs, typechecks and tests the page, so the build skips npm. -->
+  <PropertyGroup>
+    <StartupCommand>npm run dev</StartupCommand>
+    <TestCommand>npm test</TestCommand>
+    <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+  </PropertyGroup>
+
+</Project>

@@ -6,6 +6,7 @@
     The namespace rule, docs/agents/rules/file-placement.md: IDE0130 runs in the build only with
     EnforceCodeStyleInBuild, and .editorconfig makes it an error.
     SA0001 has no file, so .editorconfig cannot switch it off, and doc comments are off by rule.
+    The analyzers reach C# projects only: a package in the page's .esproj fails its restore with NU1012.
   -->
   <PropertyGroup>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -13,7 +14,7 @@
     <NoWarn>$(NoWarn);SA0001</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" Link="BannedSymbols.txt" />

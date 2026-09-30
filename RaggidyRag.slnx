@@ -3,6 +3,7 @@
     <Project Path="src/RaggidyRag.Api/RaggidyRag.Api.csproj" />
     <Project Path="src/RaggidyRag.AppHost/RaggidyRag.AppHost.csproj" />
     <Project Path="src/RaggidyRag.ServiceDefaults/RaggidyRag.ServiceDefaults.csproj" />
+    <Project Path="src/RaggidyRag.Web/RaggidyRag.Web.esproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/RaggidyRag.Api.Tests/RaggidyRag.Api.Tests.csproj" />
