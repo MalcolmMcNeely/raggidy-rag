@@ -25,4 +25,8 @@
     <Using Include="RaggidyRag.Api.Tests.Hosting" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Documents/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

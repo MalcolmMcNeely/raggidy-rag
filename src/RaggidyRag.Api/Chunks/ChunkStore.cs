@@ -8,6 +8,8 @@ public sealed class ChunkStore(VectorStore store)
 
     public Task EnsureExists(CancellationToken cancellation = default) => chunks.EnsureCollectionExistsAsync(cancellation);
 
+    public Task Store(IEnumerable<Chunk> records, CancellationToken cancellation) => chunks.UpsertAsync(records, cancellation);
+
     public async Task<bool> HoldsAnyChunk(CancellationToken cancellation)
     {
         var any = chunks.GetAsync(_ => true, top: 1, new FilteredRecordRetrievalOptions<Chunk> { IncludeVectors = false }, cancellation);

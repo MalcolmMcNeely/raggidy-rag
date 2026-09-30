@@ -14,6 +14,8 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+const counts = { documentsRead: 117, chunksStored: 340 }
+
 async function pressAsk(question: string) {
   const person = userEvent.setup()
   render(<App />)
@@ -21,7 +23,53 @@ async function pressAsk(question: string) {
   await person.click(screen.getByRole('button', { name: 'Ask' }))
 }
 
+async function pressIngest() {
+  const person = userEvent.setup()
+  render(<App />)
+  await person.click(screen.getByRole('button', { name: 'Ingest' }))
+}
+
 describe('the page', () => {
+  it('shows the counts after a person presses Ingest', async () => {
+    // Arrange
+    vi.stubGlobal('fetch', () => Promise.resolve(Response.json(counts)))
+
+    // Act
+    await pressIngest()
+
+    // Assert
+    expect((await screen.findByText('Documents read: 117. Chunks stored: 340.')).textContent).toBe('Documents read: 117. Chunks stored: 340.')
+  })
+
+  it('says that Ingest is running until the API answers', async () => {
+    // Arrange
+    let letGo!: (answered: Response) => void
+    vi.stubGlobal('fetch', () => new Promise<Response>((resolve) => { letGo = resolve }))
+
+    // Act
+    await pressIngest()
+
+    // Assert
+    expect((await screen.findByRole('status')).textContent).toBe('Ingesting…')
+    letGo(Response.json(counts))
+    await screen.findByText('Documents read: 117. Chunks stored: 340.')
+  })
+
+  it('shows why Ingest failed', async () => {
+    // Arrange
+    const problem = { title: 'Voyage AI failed', detail: 'The key was refused.', status: 502 }
+    vi.stubGlobal('fetch', () => Promise.resolve(Response.json(problem, {
+      status: 502,
+      headers: { 'Content-Type': 'application/problem+json' },
+    })))
+
+    // Act
+    await pressIngest()
+
+    // Assert
+    expect((await screen.findByRole('alert')).textContent).toBe('Voyage AI failed: The key was refused.')
+  })
+
   it('shows the Answer after a person asks a Question', async () => {
     // Arrange
     vi.stubGlobal('fetch', () => Promise.resolve(Response.json(nothingIngested)))
