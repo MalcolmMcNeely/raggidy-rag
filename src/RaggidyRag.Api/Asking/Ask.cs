@@ -4,6 +4,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using RaggidyRag.Api.Chunks;
 using RaggidyRag.Api.Failures;
+using RaggidyRag.Api.Tracing;
 
 namespace RaggidyRag.Api.Asking;
 
@@ -43,6 +44,7 @@ public sealed partial class Ask(
 
     async Task<string> Write(string prompt, CancellationToken cancellation)
     {
+        using var answering = Steps.Source.StartActivity(Steps.Answer);
         using var patience = new CancellationTokenSource(options.Value.Patience, clock);
         using var either = CancellationTokenSource.CreateLinkedTokenSource(cancellation, patience.Token);
         var written = await ServiceFailed.Blame(

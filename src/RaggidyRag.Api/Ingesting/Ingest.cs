@@ -4,6 +4,7 @@ using RaggidyRag.Api.Chunking;
 using RaggidyRag.Api.Chunks;
 using RaggidyRag.Api.Embedding;
 using RaggidyRag.Api.Failures;
+using RaggidyRag.Api.Tracing;
 
 namespace RaggidyRag.Api.Ingesting;
 
@@ -18,15 +19,25 @@ public sealed class Ingest(
     {
         var folder = Path.GetFullPath(options.Value.DocumentsFolder, environment.ContentRootPath);
         var documents = await ReadDocuments(folder, cancellation);
-        var chunks = documents.SelectMany(chunker.Cut).ToList();
+        List<Chunk> chunks;
+        using (Steps.Source.StartActivity(Steps.Chunk))
+        {
+            chunks = documents.SelectMany(chunker.Cut).ToList();
+        }
 
-        var vectors = await ServiceFailed.Blame(
-            ServiceFailed.Voyage, () => embeddings.GenerateAsync(chunks.Select(chunk => chunk.Text), InputType.Document, cancellation), cancellation);
+        GeneratedEmbeddings<Embedding<float>> vectors;
+        using (Steps.Source.StartActivity(Steps.Embed))
+        {
+            vectors = await ServiceFailed.Blame(
+                ServiceFailed.Voyage, () => embeddings.GenerateAsync(chunks.Select(chunk => chunk.Text), InputType.Document, cancellation), cancellation);
+        }
+
         foreach (var (chunk, vector) in chunks.Zip(vectors))
         {
             chunk.Embedding = vector.Vector;
         }
 
+        using var storing = Steps.Source.StartActivity(Steps.Store);
         foreach (var document in documents)
         {
             await store.Replace(document.Path, chunks.Where(chunk => chunk.DocumentPath == document.Path), cancellation);

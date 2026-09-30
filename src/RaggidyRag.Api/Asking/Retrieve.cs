@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using RaggidyRag.Api.Chunks;
 using RaggidyRag.Api.Embedding;
 using RaggidyRag.Api.Failures;
+using RaggidyRag.Api.Tracing;
 
 namespace RaggidyRag.Api.Asking;
 
@@ -13,8 +14,14 @@ public sealed class Retrieve(
 {
     public async Task<IReadOnlyList<RetrievedChunk>> Run(Question question, CancellationToken cancellation)
     {
-        var vector = await ServiceFailed.Blame(
-            ServiceFailed.Voyage, () => embeddings.GenerateVectorAsync(question.Text, InputType.Query, cancellation), cancellation);
+        ReadOnlyMemory<float> vector;
+        using (Steps.Source.StartActivity(Steps.Embed))
+        {
+            vector = await ServiceFailed.Blame(
+                ServiceFailed.Voyage, () => embeddings.GenerateVectorAsync(question.Text, InputType.Query, cancellation), cancellation);
+        }
+
+        using var retrieving = Steps.Source.StartActivity(Steps.Retrieve);
         var nearest = await store.Nearest(vector, options.Value.Count, cancellation);
         return nearest
             .Select((found, index) => new RetrievedChunk(
