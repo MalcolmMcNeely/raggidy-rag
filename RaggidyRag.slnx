@@ -1,9 +1,11 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/RaggidyRag.Api/RaggidyRag.Api.csproj" />
     <Project Path="src/RaggidyRag.AppHost/RaggidyRag.AppHost.csproj" />
     <Project Path="src/RaggidyRag.ServiceDefaults/RaggidyRag.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/RaggidyRag.Api.Tests/RaggidyRag.Api.Tests.csproj" />
     <Project Path="tests/RaggidyRag.Architecture.Tests/RaggidyRag.Architecture.Tests.csproj" />
   </Folder>
 </Solution>

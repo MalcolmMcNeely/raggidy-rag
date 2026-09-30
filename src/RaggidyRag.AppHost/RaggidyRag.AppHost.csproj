@@ -9,4 +9,12 @@
     <UserSecretsId>5835e9d7-a942-47f8-aea1-9877fcba5db8</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../RaggidyRag.Api/RaggidyRag.Api.csproj" />
+  </ItemGroup>
+
 </Project>
