@@ -20,6 +20,32 @@
         "docs/agents/review-spec.md",
         "docs/agents/review-standards.md"
       ]
+    },
+    {
+      "command": ["npm", "test"],
+      "folder": "src/RaggidyRag.Web",
+      "ready": {
+        "command": ["npm", "ci"],
+        "message": "The page's packages did not install. Install Node and npm, and run this again.",
+        "unless": "src/RaggidyRag.Web/node_modules"
+      },
+      "ignores": [
+        "README.md",
+        "CLAUDE.md",
+        ".gitignore",
+        ".gitattributes",
+        ".editorconfig",
+        ".claude/settings.json",
+        "docs",
+        "global.json",
+        "Directory.Build.props",
+        "BannedSymbols.txt",
+        "RaggidyRag.slnx",
+        "src/RaggidyRag.Api",
+        "src/RaggidyRag.AppHost",
+        "src/RaggidyRag.ServiceDefaults",
+        "tests"
+      ]
     }
   ]
 }

@@ -35,7 +35,10 @@
       "Read(~/.claude/plugins/**)",
       "Read(//c/Projects/skillworks/plugins/**)",
       "Bash(dotnet test:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm test:*)",
+      "Bash(npm install:*)"
     ]
   },
   "extraKnownMarketplaces": {
