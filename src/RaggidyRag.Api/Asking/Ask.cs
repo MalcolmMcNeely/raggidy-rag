@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using RaggidyRag.Api.Chunks;
+using RaggidyRag.Api.Failures;
 
 namespace RaggidyRag.Api.Asking;
 
@@ -44,8 +45,10 @@ public sealed partial class Ask(
     {
         using var patience = new CancellationTokenSource(options.Value.Patience, clock);
         using var either = CancellationTokenSource.CreateLinkedTokenSource(cancellation, patience.Token);
-        var written = await claude.GetResponseAsync(
-            prompt, new ChatOptions { MaxOutputTokens = options.Value.MaxTokens }, either.Token);
+        var written = await ServiceFailed.Blame(
+            ServiceFailed.Claude,
+            () => claude.GetResponseAsync(prompt, new ChatOptions { MaxOutputTokens = options.Value.MaxTokens }, either.Token),
+            cancellation);
         return written.Text;
     }
 }

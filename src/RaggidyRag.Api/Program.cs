@@ -2,10 +2,12 @@ using Anthropic;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.VectorData;
 using RaggidyRag.Api.Asking;
 using RaggidyRag.Api.Chunking;
 using RaggidyRag.Api.Chunks;
 using RaggidyRag.Api.Embedding;
+using RaggidyRag.Api.Failures;
 using RaggidyRag.Api.Ingesting;
 using RaggidyRag.ServiceDefaults;
 
@@ -20,6 +22,7 @@ builder.Services.TryAddSingleton(TimeProvider.System);
 var connectionString = builder.Configuration.GetConnectionString("raggidyrag")
     ?? throw new InvalidOperationException("The connection string raggidyrag is not set.");
 builder.Services.AddPostgresVectorStore(connectionString);
+builder.Services.TryAddSingleton(services => services.GetRequiredService<VectorStore>().GetCollection<string, Chunk>(ChunkStore.CollectionName));
 builder.Services.AddSingleton<ChunkStore>();
 builder.Services.AddSingleton<Chunker>();
 
@@ -59,8 +62,12 @@ builder.Services.AddScoped<Retrieve>();
 builder.Services.AddSingleton<PromptBuilder>();
 builder.Services.AddScoped<Ask>();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ServiceFailedHandler>();
+
 var app = builder.Build();
 
+app.UseExceptionHandler();
 app.MapDefaultEndpoints();
 
 app.MapPost("/ingest", (Ingest ingest, CancellationToken cancellation) => ingest.Run(cancellation));

@@ -29,6 +29,6 @@ public sealed class ClaudeOptionsTests(ApiHost api) : IClassFixture<ApiHost>
 
         // Assert
         using var response = await asking;
-        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+        Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
     }
 }

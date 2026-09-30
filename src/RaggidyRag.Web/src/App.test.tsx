@@ -67,9 +67,9 @@ describe('the page', () => {
     await screen.findByText('Documents read: 117. Chunks stored: 340.')
   })
 
-  it('shows why Ingest failed', async () => {
+  it('names the service that made Ingest fail', async () => {
     // Arrange
-    const problem = { title: 'Voyage AI failed', detail: 'The key was refused.', status: 502 }
+    const problem = { title: 'Postgres failed', detail: 'Postgres refused the connection.', status: 502 }
     vi.stubGlobal('fetch', () => Promise.resolve(Response.json(problem, {
       status: 502,
       headers: { 'Content-Type': 'application/problem+json' },
@@ -79,7 +79,7 @@ describe('the page', () => {
     await pressIngest()
 
     // Assert
-    expect((await screen.findByRole('alert')).textContent).toBe('Voyage AI failed: The key was refused.')
+    expect((await screen.findByRole('alert')).textContent).toBe('Postgres failed: Postgres refused the connection.')
   })
 
   it('shows the Answer after a person asks a Question', async () => {
@@ -156,9 +156,9 @@ describe('the page', () => {
     await screen.findByText(nothingIngested.answer)
   })
 
-  it('shows the problem details title and detail when the API fails', async () => {
+  it('names the service that made Ask fail', async () => {
     // Arrange
-    const problem = { title: 'Voyage AI failed', detail: 'The embedding call was refused.', status: 502 }
+    const problem = { title: 'Claude failed', detail: 'The key was refused.', status: 502 }
     vi.stubGlobal('fetch', () => Promise.resolve(Response.json(problem, {
       status: 502,
       headers: { 'Content-Type': 'application/problem+json' },
@@ -168,7 +168,7 @@ describe('the page', () => {
     await pressAsk('What is a saga?')
 
     // Assert
-    expect((await screen.findByRole('alert')).textContent).toBe('Voyage AI failed: The embedding call was refused.')
+    expect((await screen.findByRole('alert')).textContent).toBe('Claude failed: The key was refused.')
   })
 
   it('shows the status when the API fails without problem details', async () => {

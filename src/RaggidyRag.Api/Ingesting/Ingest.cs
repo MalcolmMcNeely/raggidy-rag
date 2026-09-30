@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using RaggidyRag.Api.Chunking;
 using RaggidyRag.Api.Chunks;
 using RaggidyRag.Api.Embedding;
+using RaggidyRag.Api.Failures;
 
 namespace RaggidyRag.Api.Ingesting;
 
@@ -19,7 +20,8 @@ public sealed class Ingest(
         var documents = await ReadDocuments(folder, cancellation);
         var chunks = documents.SelectMany(chunker.Cut).ToList();
 
-        var vectors = await embeddings.GenerateAsync(chunks.Select(chunk => chunk.Text), InputType.Document, cancellation);
+        var vectors = await ServiceFailed.Blame(
+            ServiceFailed.Voyage, () => embeddings.GenerateAsync(chunks.Select(chunk => chunk.Text), InputType.Document, cancellation), cancellation);
         foreach (var (chunk, vector) in chunks.Zip(vectors))
         {
             chunk.Embedding = vector.Vector;
