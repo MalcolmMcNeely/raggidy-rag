@@ -22,6 +22,7 @@ public sealed class PromptBuilderTests(ApiHost api) : IClassFixture<ApiHost>
         using var asked = await client.PostAsJsonAsync("/ask", new { text = "What does an outbox hold?" }, cancellation);
 
         // Assert
+        // A raw string takes the line endings of the checkout, and the Prompt must read the same on every OS.
         Assert.Equal(
             """
             Answer the Question from the Chunks below, and from nothing else.
@@ -39,7 +40,7 @@ public sealed class PromptBuilderTests(ApiHost api) : IClassFixture<ApiHost>
             An inbox drops each message it has handled before.
 
             Question: What does an outbox hold?
-            """,
+            """.ReplaceLineEndings("\n"),
             Assert.Single(claude.Prompts));
     }
 }

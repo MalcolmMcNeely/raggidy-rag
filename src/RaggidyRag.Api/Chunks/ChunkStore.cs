@@ -8,7 +8,15 @@ public sealed class ChunkStore(VectorStore store)
 
     public Task EnsureExists(CancellationToken cancellation = default) => chunks.EnsureCollectionExistsAsync(cancellation);
 
-    public Task Store(IEnumerable<Chunk> records, CancellationToken cancellation) => chunks.UpsertAsync(records, cancellation);
+    public async Task Replace(string documentPath, IEnumerable<Chunk> records, CancellationToken cancellation)
+    {
+        var stored = await chunks
+            .GetAsync(chunk => chunk.DocumentPath == documentPath, int.MaxValue, new FilteredRecordRetrievalOptions<Chunk> { IncludeVectors = false }, cancellation)
+            .Select(chunk => chunk.Id)
+            .ToListAsync(cancellation);
+        await chunks.DeleteAsync(stored, cancellation);
+        await chunks.UpsertAsync(records, cancellation);
+    }
 
     public async Task<bool> HoldsAnyChunk(CancellationToken cancellation)
     {

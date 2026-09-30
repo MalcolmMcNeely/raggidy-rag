@@ -25,7 +25,11 @@ public sealed class Ingest(
             chunk.Embedding = vector.Vector;
         }
 
-        await store.Store(chunks, cancellation);
+        foreach (var document in documents)
+        {
+            await store.Replace(document.Path, chunks.Where(chunk => chunk.DocumentPath == document.Path), cancellation);
+        }
+
         return new IngestResult(documents.Count, chunks.Count);
     }
 
