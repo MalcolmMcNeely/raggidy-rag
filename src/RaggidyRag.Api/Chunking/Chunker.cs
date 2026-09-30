@@ -1,10 +1,13 @@
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Options;
 using RaggidyRag.Api.Chunks;
 
 namespace RaggidyRag.Api.Chunking;
 
-public sealed partial class Chunker
+public sealed partial class Chunker(IOptions<ChunkingOptions> options)
 {
+    readonly ChunkingOptions settings = options.Value;
+
     public IReadOnlyList<Chunk> Cut(Document document)
     {
         var lines = LinesOf(document.Text);
@@ -39,14 +42,46 @@ public sealed partial class Chunker
                 return;
             }
 
-            chunks.Add(new Chunk
+            var headingTrail = trail.Count == 0 ? title : string.Join(" > ", trail.Select(heading => heading.Text));
+            foreach (var sized in CutToCap(text))
             {
-                Id = $"{document.Path}#{chunks.Count}",
-                DocumentPath = document.Path,
-                HeadingTrail = trail.Count == 0 ? title : string.Join(" > ", trail.Select(heading => heading.Text)),
-                Position = chunks.Count,
-                Text = text,
-            });
+                chunks.Add(new Chunk
+                {
+                    Id = $"{document.Path}#{chunks.Count}",
+                    DocumentPath = document.Path,
+                    HeadingTrail = headingTrail,
+                    Position = chunks.Count,
+                    Text = sized,
+                });
+            }
+        }
+    }
+
+    IEnumerable<string> CutToCap(string text)
+    {
+        var breaks = ParagraphBreak().Matches(text).Select(match => match.Index).Append(text.Length).ToList();
+        var start = 0;
+        var end = 0;
+        while (end < text.Length)
+        {
+            end = breaks.LastOrDefault(at => at > end && at - start <= settings.Cap);
+            if (end == 0)
+            {
+                end = start + settings.Cap;
+            }
+
+            yield return text[start..end];
+            if (settings.Overlap > 0)
+            {
+                start = Math.Max(start, end - settings.Overlap);
+                continue;
+            }
+
+            start = end;
+            while (start < text.Length && char.IsWhiteSpace(text[start]))
+            {
+                start++;
+            }
         }
     }
 
@@ -84,6 +119,9 @@ public sealed partial class Chunker
 
     [GeneratedRegex(@"^ {0,3}(?<marks>`{3,}|~{3,})")]
     private static partial Regex FenceLine();
+
+    [GeneratedRegex(@"\n[ \t]*\n")]
+    private static partial Regex ParagraphBreak();
 
     sealed record Heading(int Level, string Text);
 }

@@ -23,6 +23,10 @@ builder.Services.AddSingleton<Chunker>();
 
 builder.Services.AddOptions<VoyageOptions>().BindConfiguration("Voyage");
 builder.Services.AddOptions<IngestOptions>().BindConfiguration("Ingest");
+// A Chunk after the first must hold more than the overlap it repeats, or the cut never moves on.
+builder.Services.AddOptions<ChunkingOptions>().BindConfiguration("Chunking")
+    .Validate(chunking => chunking.Overlap >= 0 && chunking.Overlap < chunking.Cap, "Chunking:Overlap must be at least 0 and less than Chunking:Cap.")
+    .ValidateOnStart();
 
 // The default resilience handler has timeouts of its own, and the Clock's wait on Voyage must be the only one.
 #pragma warning disable EXTEXP0001
