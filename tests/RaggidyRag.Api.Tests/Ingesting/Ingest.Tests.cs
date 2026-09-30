@@ -15,7 +15,21 @@ public sealed class IngestTests(ApiHost api) : IClassFixture<ApiHost>
         using var response = await client.PostAsJsonAsync("/ingest", new { }, cancellation);
 
         // Assert
-        Assert.Equal("""{"documentsRead":2,"chunksStored":2}""", await response.Content.ReadAsStringAsync(cancellation));
+        Assert.Equal("""{"documentsRead":2,"chunksStored":3}""", await response.Content.ReadAsStringAsync(cancellation));
+    }
+
+    [Fact]
+    public async Task IngestStoresOneChunkForEachSectionOfADocument()
+    {
+        // Arrange
+        var cancellation = TestContext.Current.CancellationToken;
+        using var client = api.WithDocuments("Sectioned").CreateClient();
+
+        // Act
+        using var response = await client.PostAsJsonAsync("/ingest", new { }, cancellation);
+
+        // Assert
+        Assert.Equal("""{"documentsRead":1,"chunksStored":4}""", await response.Content.ReadAsStringAsync(cancellation));
     }
 
     [Fact]
