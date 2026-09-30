@@ -23,3 +23,25 @@ _Avoid_: Breadcrumb, path, outline
 The step that reads every Document in the folder, cuts it into Chunks, embeds each Chunk and stores
 it.
 _Avoid_: Load, index, import, sync
+
+**Question**:
+The text a person types to ask something of the Documents.
+_Avoid_: Query, request, input
+
+**Retrieve**:
+The step that finds the Chunks that fit a Question best.
+_Avoid_: Lookup, fetch, find
+
+**Prompt**:
+The text the code sends to the model: the Question, the retrieved Chunks, each with a number, and
+the instructions for answering from them.
+_Avoid_: Message, context, template
+
+**Answer**:
+The text the model writes from the retrieved Chunks, with a Citation after each fact.
+_Avoid_: Response, reply, completion, output
+
+**Citation**:
+A numbered mark in an Answer, such as `[2]`, that points at the Chunk a fact came from. It shows as
+the Document's path and the Chunk's Heading trail.
+_Avoid_: Reference, source, footnote, link
