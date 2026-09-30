@@ -4,7 +4,7 @@ using Microsoft.Extensions.AI;
 namespace RaggidyRag.Api.Tests.Hosting;
 
 // A text that names a topic gets that topic's vector, so a Question lands at distance 0 from its topic's Chunk and 1 from the rest.
-public sealed class FixedEmbeddings : IEmbeddingGenerator<string, Embedding<float>>
+public sealed class TopicEmbeddings : IEmbeddingGenerator<string, Embedding<float>>
 {
     public const int Dimensions = 1024;
 

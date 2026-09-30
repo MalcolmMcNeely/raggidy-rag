@@ -13,7 +13,7 @@ public sealed class ApiHost(Postgres postgres) : WebApplicationFactory<Program>,
 
     public FakeTimeProvider Clock { get; } = new();
 
-    public FixedEmbeddings Embeddings { get; } = new();
+    public TopicEmbeddings Embeddings { get; } = new();
 
     public async ValueTask InitializeAsync() => connectionString = await postgres.CreateDatabase();
 
