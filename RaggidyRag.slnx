@@ -1,2 +1,6 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RaggidyRag.AppHost/RaggidyRag.AppHost.csproj" />
+    <Project Path="src/RaggidyRag.ServiceDefaults/RaggidyRag.ServiceDefaults.csproj" />
+  </Folder>
 </Solution>

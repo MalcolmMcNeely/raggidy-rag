@@ -7,7 +7,13 @@ documents that fit a question, and gives them to a model to answer from.
 
 ## Status
 
-An empty solution. Nothing runs yet.
+An Aspire app host with no services in it. Nothing useful runs yet.
+
+## Layout
+
+- `src/RaggidyRag.AppHost`: the Aspire app host. It starts every service and container.
+- `src/RaggidyRag.ServiceDefaults`: the logging, health checks and telemetry each service shares.
+- `docs/agents/`: the rules and checks the Skillworks loop reads.
 
 ## The plan
 
