@@ -8,4 +8,6 @@ public static class InputType
     public const string Key = "input_type";
 
     public static EmbeddingGenerationOptions Document { get; } = new() { AdditionalProperties = new() { [Key] = "document" } };
+
+    public static EmbeddingGenerationOptions Query { get; } = new() { AdditionalProperties = new() { [Key] = "query" } };
 }

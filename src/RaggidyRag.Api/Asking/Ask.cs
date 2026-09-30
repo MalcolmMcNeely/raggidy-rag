@@ -2,7 +2,7 @@ using RaggidyRag.Api.Chunks;
 
 namespace RaggidyRag.Api.Asking;
 
-public sealed class Ask(ChunkStore chunks)
+public sealed class Ask(ChunkStore chunks, Retrieve retrieve)
 {
     public const string NothingIngestedYet = "Nothing has been ingested yet. Press Ingest first.";
 
@@ -13,6 +13,7 @@ public sealed class Ask(ChunkStore chunks)
             return new AskResult(NothingIngestedYet, [], []);
         }
 
-        throw new NotImplementedException("Retrieve and Answer are not built yet.");
+        var retrieved = await retrieve.Run(question, cancellation);
+        return new AskResult("", [], retrieved);
     }
 }

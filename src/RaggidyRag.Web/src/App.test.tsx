@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { App } from './App'
@@ -79,6 +79,29 @@ describe('the page', () => {
 
     // Assert
     expect((await screen.findByText(nothingIngested.answer)).textContent).toBe(nothingIngested.answer)
+  })
+
+  it('lists each retrieved Chunk with its score under the Answer', async () => {
+    // Arrange
+    const retrieved = {
+      answer: '',
+      citations: [],
+      retrievedChunks: [
+        { number: 1, documentPath: 'outbox.md', headingTrail: 'Outbox', score: 0.1234, text: 'An outbox holds each message.' },
+        { number: 2, documentPath: 'adr/0001-use-sagas.md', headingTrail: 'Use sagas > Why', score: 0.5, text: 'A saga keeps its state.' },
+      ],
+    }
+    vi.stubGlobal('fetch', () => Promise.resolve(Response.json(retrieved)))
+
+    // Act
+    await pressAsk('What does an outbox hold?')
+
+    // Assert
+    const list = await screen.findByRole('list', { name: 'Retrieved Chunks' })
+    expect(within(list).getAllByRole('listitem').map((chunk) => chunk.textContent)).toEqual([
+      '[1] outbox.md — Outbox · score 0.123An outbox holds each message.',
+      '[2] adr/0001-use-sagas.md — Use sagas > Why · score 0.500A saga keeps its state.',
+    ])
   })
 
   it('says that Ask is running until the API answers', async () => {

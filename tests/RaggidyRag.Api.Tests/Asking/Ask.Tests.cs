@@ -1,15 +1,21 @@
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RaggidyRag.Api.Tests.Asking;
 
 public sealed class AskTests(ApiHost api) : IClassFixture<ApiHost>
 {
     [Fact]
-    public async Task AskBeforeAnyIngestSaysNothingHasBeenIngestedYet()
+    public async Task AskBeforeAnyIngestSaysNothingHasBeenIngestedYetWithoutCallingVoyage()
     {
         // Arrange
         var cancellation = TestContext.Current.CancellationToken;
-        using var client = api.CreateClient();
+        using var client = api
+            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+                services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>, FailingEmbeddings>()))
+            .CreateClient();
 
         // Act
         using var response = await client.PostAsJsonAsync("/ask", new { text = "What is a saga?" }, cancellation);

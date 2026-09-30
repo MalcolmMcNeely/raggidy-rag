@@ -13,6 +13,8 @@ public sealed class ApiHost(Postgres postgres) : WebApplicationFactory<Program>,
 
     public FakeTimeProvider Clock { get; } = new();
 
+    public FixedEmbeddings Embeddings { get; } = new();
+
     public async ValueTask InitializeAsync() => connectionString = await postgres.CreateDatabase();
 
     public WebApplicationFactory<Program> WithDocuments(string folder) =>
@@ -24,7 +26,7 @@ public sealed class ApiHost(Postgres postgres) : WebApplicationFactory<Program>,
         builder.ConfigureTestServices(services =>
         {
             services.AddSingleton<TimeProvider>(Clock);
-            services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>, FixedEmbeddings>();
+            services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(Embeddings);
         });
     }
 }

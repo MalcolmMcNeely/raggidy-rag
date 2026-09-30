@@ -15,4 +15,7 @@ public sealed class ChunkStore(VectorStore store)
         var any = chunks.GetAsync(_ => true, top: 1, new FilteredRecordRetrievalOptions<Chunk> { IncludeVectors = false }, cancellation);
         return await any.AnyAsync(cancellation);
     }
+
+    public async Task<IReadOnlyList<VectorSearchResult<Chunk>>> Nearest(ReadOnlyMemory<float> vector, int count, CancellationToken cancellation) =>
+        await chunks.SearchAsync(vector, count, new VectorSearchOptions<Chunk> { IncludeVectors = false }, cancellation).ToListAsync(cancellation);
 }

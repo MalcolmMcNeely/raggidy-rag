@@ -23,6 +23,7 @@ builder.Services.AddSingleton<Chunker>();
 
 builder.Services.AddOptions<VoyageOptions>().BindConfiguration("Voyage");
 builder.Services.AddOptions<IngestOptions>().BindConfiguration("Ingest");
+builder.Services.AddOptions<RetrieveOptions>().BindConfiguration("Retrieve");
 // A Chunk after the first must hold more than the overlap it repeats, or the cut never moves on.
 builder.Services.AddOptions<ChunkingOptions>().BindConfiguration("Chunking")
     .Validate(chunking => chunking.Overlap >= 0 && chunking.Overlap < chunking.Cap, "Chunking:Overlap must be at least 0 and less than Chunking:Cap.")
@@ -35,7 +36,8 @@ builder.Services.AddHttpClient<IEmbeddingGenerator<string, Embedding<float>>, Vo
 #pragma warning restore EXTEXP0001
 
 builder.Services.AddScoped<Ingest>();
-builder.Services.AddSingleton<Ask>();
+builder.Services.AddScoped<Retrieve>();
+builder.Services.AddScoped<Ask>();
 
 var app = builder.Build();
 

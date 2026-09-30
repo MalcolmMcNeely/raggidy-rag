@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from 'react'
 import { ask } from '../api/ask'
+import type { AskResult } from '../api/AskResult'
+import { RetrievedChunks } from './RetrievedChunks'
 
 type Asking =
   | { state: 'idle' }
   | { state: 'running' }
-  | { state: 'answered'; answer: string }
+  | { state: 'answered'; result: AskResult }
   | { state: 'failed'; error: string }
 
 export function Ask() {
@@ -15,8 +17,7 @@ export function Ask() {
     event.preventDefault()
     setAsking({ state: 'running' })
     try {
-      const result = await ask(question)
-      setAsking({ state: 'answered', answer: result.answer })
+      setAsking({ state: 'answered', result: await ask(question) })
     } catch (error) {
       setAsking({ state: 'failed', error: error instanceof Error ? error.message : String(error) })
     }
@@ -32,7 +33,12 @@ export function Ask() {
         Ask
       </button>
       {asking.state === 'running' && <p role="status">Asking…</p>}
-      {asking.state === 'answered' && <p>{asking.answer}</p>}
+      {asking.state === 'answered' && (
+        <>
+          <p>{asking.result.answer}</p>
+          {asking.result.retrievedChunks.length > 0 && <RetrievedChunks chunks={asking.result.retrievedChunks} />}
+        </>
+      )}
       {asking.state === 'failed' && <p role="alert">{asking.error}</p>}
     </form>
   )
