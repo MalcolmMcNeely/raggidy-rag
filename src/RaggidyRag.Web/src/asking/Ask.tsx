@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { ask } from '../api/ask'
 import type { AskResult } from '../api/AskResult'
+import { Citations } from './Citations'
 import { RetrievedChunks } from './RetrievedChunks'
 
 type Asking =
@@ -36,6 +37,7 @@ export function Ask() {
       {asking.state === 'answered' && (
         <>
           <p>{asking.result.answer}</p>
+          {asking.result.citations.length > 0 && <Citations citations={asking.result.citations} />}
           {asking.result.retrievedChunks.length > 0 && <RetrievedChunks chunks={asking.result.retrievedChunks} />}
         </>
       )}

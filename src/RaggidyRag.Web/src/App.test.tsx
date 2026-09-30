@@ -9,6 +9,18 @@ const nothingIngested = {
   retrievedChunks: [],
 }
 
+const answered = {
+  answer: 'An outbox holds each message [1]. A saga keeps its state [2].',
+  citations: [
+    { number: 1, documentPath: 'outbox.md', headingTrail: 'Outbox' },
+    { number: 2, documentPath: 'adr/0001-use-sagas.md', headingTrail: 'Use sagas > Why' },
+  ],
+  retrievedChunks: [
+    { number: 1, documentPath: 'outbox.md', headingTrail: 'Outbox', score: 0.1, text: 'An outbox holds each message.' },
+    { number: 2, documentPath: 'adr/0001-use-sagas.md', headingTrail: 'Use sagas > Why', score: 0.2, text: 'A saga keeps its state.' },
+  ],
+}
+
 afterEach(() => {
   cleanup()
   vi.unstubAllGlobals()
@@ -79,6 +91,32 @@ describe('the page', () => {
 
     // Assert
     expect((await screen.findByText(nothingIngested.answer)).textContent).toBe(nothingIngested.answer)
+  })
+
+  it('shows the Answer with its Citation marks', async () => {
+    // Arrange
+    vi.stubGlobal('fetch', () => Promise.resolve(Response.json(answered)))
+
+    // Act
+    await pressAsk('What does an outbox hold?')
+
+    // Assert
+    expect((await screen.findByText(answered.answer)).textContent).toBe(answered.answer)
+  })
+
+  it('lists each Citation with its Document path and Heading trail under the Answer', async () => {
+    // Arrange
+    vi.stubGlobal('fetch', () => Promise.resolve(Response.json(answered)))
+
+    // Act
+    await pressAsk('What does an outbox hold?')
+
+    // Assert
+    const list = await screen.findByRole('list', { name: 'Citations' })
+    expect(within(list).getAllByRole('listitem').map((citation) => citation.textContent)).toEqual([
+      '[1] outbox.md — Outbox',
+      '[2] adr/0001-use-sagas.md — Use sagas > Why',
+    ])
   })
 
   it('lists each retrieved Chunk with its score under the Answer', async () => {

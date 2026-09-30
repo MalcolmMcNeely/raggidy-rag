@@ -7,7 +7,7 @@ documents that fit a question, and gives them to a model to answer from.
 
 ## Status
 
-An Aspire app host with no services in it. Nothing useful runs yet.
+The first slice runs: Ingest the Edict docs, then ask a Question and get an Answer with Citations.
 
 ## Layout
 

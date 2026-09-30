@@ -27,6 +27,7 @@ public sealed class ApiHost(Postgres postgres) : WebApplicationFactory<Program>,
         {
             services.AddSingleton<TimeProvider>(Clock);
             services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(Embeddings);
+            services.AddSingleton<IChatClient>(new AnsweringClaude(""));
         });
     }
 }

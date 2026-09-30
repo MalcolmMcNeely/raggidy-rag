@@ -8,13 +8,14 @@ namespace RaggidyRag.Api.Tests.Asking;
 public sealed class AskTests(ApiHost api) : IClassFixture<ApiHost>
 {
     [Fact]
-    public async Task AskBeforeAnyIngestSaysNothingHasBeenIngestedYetWithoutCallingVoyage()
+    public async Task AskBeforeAnyIngestSaysNothingHasBeenIngestedYetWithoutCallingVoyageOrClaude()
     {
         // Arrange
         var cancellation = TestContext.Current.CancellationToken;
         using var client = api
-            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-                services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>, FailingEmbeddings>()))
+            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services => services
+                .AddSingleton<IEmbeddingGenerator<string, Embedding<float>>, FailingEmbeddings>()
+                .AddSingleton<IChatClient, FailingClaude>()))
             .CreateClient();
 
         // Act

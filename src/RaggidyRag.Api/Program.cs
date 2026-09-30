@@ -1,5 +1,7 @@
+using Anthropic;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using RaggidyRag.Api.Asking;
 using RaggidyRag.Api.Chunking;
 using RaggidyRag.Api.Chunks;
@@ -35,8 +37,26 @@ builder.Services.AddHttpClient<IEmbeddingGenerator<string, Embedding<float>>, Vo
     .RemoveAllResilienceHandlers();
 #pragma warning restore EXTEXP0001
 
+builder.Services.AddOptions<ClaudeOptions>().BindConfiguration("Claude");
+#pragma warning disable EXTEXP0001
+builder.Services.AddHttpClient("Claude").RemoveAllResilienceHandlers();
+#pragma warning restore EXTEXP0001
+builder.Services.AddSingleton<IChatClient>(services =>
+{
+    var claude = services.GetRequiredService<IOptions<ClaudeOptions>>().Value;
+    var http = services.GetRequiredService<IHttpClientFactory>().CreateClient("Claude");
+
+    // HttpClient's and the Anthropic client's own limits run on the machine's clock, and the wait on Claude has to be the Clock's alone.
+#pragma warning disable RS0030
+    http.Timeout = Timeout.InfiniteTimeSpan;
+#pragma warning restore RS0030
+    return new AnthropicClient { ApiKey = claude.ApiKey, HttpClient = http, Timeout = Timeout.InfiniteTimeSpan }
+        .AsIChatClient(claude.Model);
+});
+
 builder.Services.AddScoped<Ingest>();
 builder.Services.AddScoped<Retrieve>();
+builder.Services.AddSingleton<PromptBuilder>();
 builder.Services.AddScoped<Ask>();
 
 var app = builder.Build();
